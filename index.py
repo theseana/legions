@@ -5,6 +5,16 @@ import json
 import hashlib
 
 
+def check_digit(a, b, c):
+    print("tada!")
+    cond1 = len(sv_card_number.get()) == 16
+    cond2 = sv_card_number.get().isdigit()
+    if cond1 and cond2:
+        e1.config(bg='#78ffa0')
+    else:
+        e1.config(bg='#ff7a7a')
+
+
 def to_shal(password):
     return hashlib.sha1(password.encode('utf-8')).hexdigest()
 
@@ -19,6 +29,11 @@ def append_json (data,path):
     json_data.append(data)
     with open(path,"w") as file:
         json.dump(json_data, file, indent=4)
+
+
+def write_json (data, path):
+    with open(path,"w") as file:
+        json.dump(data, file, indent=4)
 
 
 def get_id(path):
@@ -74,8 +89,11 @@ def sing(s):
         sv_password=StringVar()
         Entry(register, textvariable=sv_password).grid(row=3,column=0)
         Label(register,text="card number").grid(row=4,column=0)
+        global sv_card_number, e1
         sv_card_number=StringVar()
-        Entry(register, textvariable=sv_card_number).grid(row=5,column=0)
+        sv_card_number.trace("w", check_digit)
+        e1 = Entry(register, textvariable=sv_card_number)
+        e1.grid(row=5,column=0)
         Button(register,text="sign up",command=sign_up).grid(row=6,column=0)
         Button(register,text="Exit",command=register.destroy).grid(row=7,column=0)
 
@@ -91,9 +109,27 @@ def menu(person_id):
         Label(top, text="Your Balance:").grid(row=0,column=0)
         Label(top, text=your_balance).grid(row=1,column=0)    
 
+    def withdrawal():
+        all_data = read_json('register.json')
+        for person in all_data:
+            if person["id"] == person_id:
+                if person["cash"] > withdraw_amount.get():
+                    person["cash"] -= withdraw_amount.get()
+                    write_json(all_data, 'register.json')
+                else:
+                    messagebox.showerror('Withdraw Fail', "Not Enough Money!!!")
+
+    def withdraw():
+        top = Toplevel()
+        Label(top, text="Amount:").grid(row=0,column=0)
+        global withdraw_amount
+        withdraw_amount = IntVar()
+        Entry(top, textvariable=withdraw_amount).grid(row=0,column=1)
+        Button(top, text="Withdraw", command=withdrawal).grid(row=1,column=0)
+
     menu_page = Toplevel()
     Button(menu_page, text="Balance", command=balance).grid(row=0,column=0)
-    Button(menu_page, text="Withraw").grid(row=0,column=1)
+    Button(menu_page, text="Withraw", command=withdraw).grid(row=0,column=1)
     Button(menu_page, text="Transfer").grid(row=1,column=0)
     Button(menu_page, text="ChangePin").grid(row=1,column=1)
     Button(menu_page, text="Cancel", command=menu_page.destroy).grid(row=2,column=0)

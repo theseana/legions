@@ -5,5 +5,12 @@
         "password": "7c4a8d09ca3762af61e59520943dc26494f8941b",
         "card_number": "",
         "cash": 1001
+    },
+    {
+        "id": 2,
+        "name": "soadmoayer",
+        "password": "7c4a8d09ca3762af61e59520943dc26494f8941b",
+        "card_number": "8798765465463",
+        "cash": 9999999994
     }
 ]

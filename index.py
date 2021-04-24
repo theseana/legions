@@ -29,7 +29,7 @@ def get_id(path):
 def check_person(name, path):
     json_data = read_json(path)
     for person in json_data:
-        if person["name"]==name:
+        if person["name"] == name:
             messagebox.showerror('register faild', "this username is already used")
             return False
     return True       
@@ -43,7 +43,7 @@ def sing(s):
             data_json = read_json("register.json")
             for person in data_json:
                 if person["name"] == username and person['password']==password:
-                    messagebox.showerror("tada",'tada')
+                   menu(person["id"])
 
         login=Toplevel()
         Label(login, text="Username").grid(row=0, column=0)
@@ -56,10 +56,8 @@ def sing(s):
         Button(login, text="Exit", command=login.destroy).grid(row=7,column=0)
     elif s=="register":
         def sign_up():
-            is_let = True
-            sv_card_number=StringVar()
+            is_let = check_person(sv_username.get(), 'register.json')
             if is_let:
-
                 new_obj ={
                     "id":get_id("register.json"),
                     "name":sv_username.get(),
@@ -82,8 +80,23 @@ def sing(s):
         Button(register,text="Exit",command=register.destroy).grid(row=7,column=0)
 
 
-def menu():
-    Label()
+def menu(person_id):
+    def balance():
+        all_data = read_json('register.json')
+        your_balance = 0
+        for person in all_data:
+            if person["id"] == person_id:
+                your_balance = person["cash"]                
+        top = Toplevel()
+        Label(top, text="Your Balance:").grid(row=0,column=0)
+        Label(top, text=your_balance).grid(row=1,column=0)    
+
+    menu_page = Toplevel()
+    Button(menu_page, text="Balance", command=balance).grid(row=0,column=0)
+    Button(menu_page, text="Withraw").grid(row=0,column=1)
+    Button(menu_page, text="Transfer").grid(row=1,column=0)
+    Button(menu_page, text="ChangePin").grid(row=1,column=1)
+    Button(menu_page, text="Cancel", command=menu_page.destroy).grid(row=2,column=0)
 
 
 main=Tk()
